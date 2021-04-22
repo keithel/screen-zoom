@@ -58,7 +58,7 @@ int main(int argc, char *argv[])
     QApplication app(argc, argv);
 
     ScreenZoom screenZoom;
-    screenZoom.move(screenZoom.screen()->availableGeometry().topLeft() + QPoint(20, 20));
+    screenZoom.move(screenZoom.screen()->availableGeometry().topLeft());
     screenZoom.show();
 
     return app.exec();

@@ -64,7 +64,7 @@ ScreenZoom::ScreenZoom()
     QVBoxLayout *mainLayout = new QVBoxLayout(this);
     mainLayout->addWidget(screenshotLabel);
 
-    QGroupBox *optionsGroupBox = new QGroupBox(tr("Options"), this);
+    QGroupBox *optionsGroupBox = new QGroupBox(tr("Options"));//, this);
     delaySpinBox = new QSpinBox(optionsGroupBox);
     delaySpinBox->setSuffix(tr(" ms"));
     delaySpinBox->setMaximum(6000);
@@ -77,15 +77,15 @@ ScreenZoom::ScreenZoom()
     optionsGroupBoxLayout->addWidget(new QLabel(tr("Screenshot Delay:"), this), 0, 0);
     optionsGroupBoxLayout->addWidget(delaySpinBox, 0, 1);
 
-    mainLayout->addWidget(optionsGroupBox);
+//    mainLayout->addWidget(optionsGroupBox);
 
     QHBoxLayout *buttonsLayout = new QHBoxLayout;
     buttonsLayout->addStretch();
-    QPushButton *quitScreenshotButton = new QPushButton(tr("Quit"), this);
+    QPushButton *quitScreenshotButton = new QPushButton(tr("Quit"));//, this);
     quitScreenshotButton->setShortcut(Qt::CTRL + Qt::Key_Q);
     connect(quitScreenshotButton, &QPushButton::clicked, qApp, &QCoreApplication::quit);
     buttonsLayout->addWidget(quitScreenshotButton);
-    mainLayout->addLayout(buttonsLayout);
+//    mainLayout->addLayout(buttonsLayout);
 
     shotTimer = new QTimer(this);
     connect(shotTimer, &QTimer::timeout, this, &ScreenZoom::shootScreen);
