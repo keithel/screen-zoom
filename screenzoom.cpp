@@ -137,7 +137,8 @@ void ScreenZoom::shootScreen()
     if (delaySpinBox->value() != 0)
         QApplication::beep();
 
-    originalPixmap = screen->grabWindow(0);
+    QPoint cursorPos = QCursor::pos();
+    originalPixmap = screen->grabWindow(0, cursorPos.x(), cursorPos.y());//, 50, 50);
     updateScreenshotLabel();
 
     newScreenshotButton->setDisabled(false);
