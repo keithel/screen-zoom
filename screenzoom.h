@@ -77,7 +77,6 @@ protected:
 
 private slots:
     void newScreenshot();
-    void saveScreenshot();
     void shootScreen();
     void updateCheckBox();
 

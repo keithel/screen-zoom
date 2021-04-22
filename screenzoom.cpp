@@ -82,17 +82,14 @@ ScreenZoom::ScreenZoom()
     mainLayout->addWidget(optionsGroupBox);
 
     QHBoxLayout *buttonsLayout = new QHBoxLayout;
+    buttonsLayout->addStretch();
     newScreenshotButton = new QPushButton(tr("New Screenshot"), this);
     connect(newScreenshotButton, &QPushButton::clicked, this, &ScreenZoom::newScreenshot);
     buttonsLayout->addWidget(newScreenshotButton);
-    QPushButton *saveScreenshotButton = new QPushButton(tr("Save Screenshot"), this);
-    connect(saveScreenshotButton, &QPushButton::clicked, this, &ScreenZoom::saveScreenshot);
-    buttonsLayout->addWidget(saveScreenshotButton);
     QPushButton *quitScreenshotButton = new QPushButton(tr("Quit"), this);
     quitScreenshotButton->setShortcut(Qt::CTRL + Qt::Key_Q);
     connect(quitScreenshotButton, &QPushButton::clicked, this, &QWidget::close);
     buttonsLayout->addWidget(quitScreenshotButton);
-    buttonsLayout->addStretch();
     mainLayout->addLayout(buttonsLayout);
 
     shootScreen();
@@ -126,37 +123,6 @@ void ScreenZoom::newScreenshot()
 }
 //! [2]
 
-//! [3]
-void ScreenZoom::saveScreenshot()
-{
-    const QString format = "png";
-    QString initialPath = QStandardPaths::writableLocation(QStandardPaths::PicturesLocation);
-    if (initialPath.isEmpty())
-        initialPath = QDir::currentPath();
-    initialPath += tr("/untitled.") + format;
-
-    QFileDialog fileDialog(this, tr("Save As"), initialPath);
-    fileDialog.setAcceptMode(QFileDialog::AcceptSave);
-    fileDialog.setFileMode(QFileDialog::AnyFile);
-    fileDialog.setDirectory(initialPath);
-    QStringList mimeTypes;
-    const QList<QByteArray> baMimeTypes = QImageWriter::supportedMimeTypes();
-    for (const QByteArray &bf : baMimeTypes)
-        mimeTypes.append(QLatin1String(bf));
-    fileDialog.setMimeTypeFilters(mimeTypes);
-    fileDialog.selectMimeTypeFilter("image/" + format);
-    fileDialog.setDefaultSuffix(format);
-    if (fileDialog.exec() != QDialog::Accepted)
-        return;
-    const QString fileName = fileDialog.selectedFiles().first();
-    if (!originalPixmap.save(fileName)) {
-        QMessageBox::warning(this, tr("Save Error"), tr("The image could not be saved to \"%1\".")
-                             .arg(QDir::toNativeSeparators(fileName)));
-    }
-}
-//! [3]
-
-//! [4]
 void ScreenZoom::shootScreen()
 {
     QScreen *screen = QGuiApplication::primaryScreen();
