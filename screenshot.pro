@@ -1,10 +1,7 @@
 QT += widgets
 requires(qtConfig(filedialog))
 
-HEADERS             = screenshot.h
+HEADERS             = \
+    screenzoom.h
 SOURCES             = main.cpp \
-                      screenshot.cpp
-
-# install
-target.path = $$[QT_INSTALL_EXAMPLES]/widgets/desktop/screenshot
-INSTALLS += target
+    screenzoom.cpp

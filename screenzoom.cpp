@@ -1,9 +1,8 @@
 /****************************************************************************
 **
-** Copyright (C) 2016 The Qt Company Ltd.
+** Copyright (C) 2021 Keith Kyzivat
+** Copyright (C) 2021 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
-**
-** This file is part of the examples of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:BSD$
 ** Commercial License Usage
@@ -50,10 +49,10 @@
 
 #include <QtWidgets>
 
-#include "screenshot.h"
+#include "screenzoom.h"
 
 //! [0]
-Screenshot::Screenshot()
+ScreenZoom::ScreenZoom()
     :  screenshotLabel(new QLabel(this))
 {
     screenshotLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
@@ -71,7 +70,7 @@ Screenshot::Screenshot()
     delaySpinBox->setMaximum(60);
 
     connect(delaySpinBox, QOverload<int>::of(&QSpinBox::valueChanged),
-            this, &Screenshot::updateCheckBox);
+            this, &ScreenZoom::updateCheckBox);
 
     hideThisWindowCheckBox = new QCheckBox(tr("Hide This Window"), optionsGroupBox);
 
@@ -84,10 +83,10 @@ Screenshot::Screenshot()
 
     QHBoxLayout *buttonsLayout = new QHBoxLayout;
     newScreenshotButton = new QPushButton(tr("New Screenshot"), this);
-    connect(newScreenshotButton, &QPushButton::clicked, this, &Screenshot::newScreenshot);
+    connect(newScreenshotButton, &QPushButton::clicked, this, &ScreenZoom::newScreenshot);
     buttonsLayout->addWidget(newScreenshotButton);
     QPushButton *saveScreenshotButton = new QPushButton(tr("Save Screenshot"), this);
-    connect(saveScreenshotButton, &QPushButton::clicked, this, &Screenshot::saveScreenshot);
+    connect(saveScreenshotButton, &QPushButton::clicked, this, &ScreenZoom::saveScreenshot);
     buttonsLayout->addWidget(saveScreenshotButton);
     QPushButton *quitScreenshotButton = new QPushButton(tr("Quit"), this);
     quitScreenshotButton->setShortcut(Qt::CTRL + Qt::Key_Q);
@@ -105,7 +104,7 @@ Screenshot::Screenshot()
 //! [0]
 
 //! [1]
-void Screenshot::resizeEvent(QResizeEvent * /* event */)
+void ScreenZoom::resizeEvent(QResizeEvent * /* event */)
 {
     QSize scaledSize = originalPixmap.size();
     scaledSize.scale(screenshotLabel->size(), Qt::KeepAspectRatio);
@@ -115,18 +114,18 @@ void Screenshot::resizeEvent(QResizeEvent * /* event */)
 //! [1]
 
 //! [2]
-void Screenshot::newScreenshot()
+void ScreenZoom::newScreenshot()
 {
     if (hideThisWindowCheckBox->isChecked())
         hide();
     newScreenshotButton->setDisabled(true);
 
-    QTimer::singleShot(delaySpinBox->value() * 1000, this, &Screenshot::shootScreen);
+    QTimer::singleShot(delaySpinBox->value() * 1000, this, &ScreenZoom::shootScreen);
 }
 //! [2]
 
 //! [3]
-void Screenshot::saveScreenshot()
+void ScreenZoom::saveScreenshot()
 {
     const QString format = "png";
     QString initialPath = QStandardPaths::writableLocation(QStandardPaths::PicturesLocation);
@@ -156,7 +155,7 @@ void Screenshot::saveScreenshot()
 //! [3]
 
 //! [4]
-void Screenshot::shootScreen()
+void ScreenZoom::shootScreen()
 {
     QScreen *screen = QGuiApplication::primaryScreen();
     if (const QWindow *window = windowHandle())
@@ -177,7 +176,7 @@ void Screenshot::shootScreen()
 //! [4]
 
 //! [6]
-void Screenshot::updateCheckBox()
+void ScreenZoom::updateCheckBox()
 {
     if (delaySpinBox->value() == 0) {
         hideThisWindowCheckBox->setDisabled(true);
@@ -190,7 +189,7 @@ void Screenshot::updateCheckBox()
 
 
 //! [10]
-void Screenshot::updateScreenshotLabel()
+void ScreenZoom::updateScreenshotLabel()
 {
     screenshotLabel->setPixmap(originalPixmap.scaled(screenshotLabel->size(),
                                                      Qt::KeepAspectRatio,

@@ -1,9 +1,8 @@
 /****************************************************************************
 **
-** Copyright (C) 2016 The Qt Company Ltd.
+** Copyright (C) 2021 Keith Kyzivat
+** Copyright (C) 2021 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
-**
-** This file is part of the examples of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:BSD$
 ** Commercial License Usage
@@ -51,16 +50,16 @@
 #include <QApplication>
 #include <QScreen>
 
-#include "screenshot.h"
+#include "screenzoom.h"
 
 int main(int argc, char *argv[])
 {
     QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     QApplication app(argc, argv);
 
-    Screenshot screenshot;
-    screenshot.move(screenshot.screen()->availableGeometry().topLeft() + QPoint(20, 20));
-    screenshot.show();
+    ScreenZoom screenZoom;
+    screenZoom.move(screenZoom.screen()->availableGeometry().topLeft() + QPoint(20, 20));
+    screenZoom.show();
 
     return app.exec();
 }

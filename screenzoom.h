@@ -1,9 +1,8 @@
 /****************************************************************************
 **
-** Copyright (C) 2016 The Qt Company Ltd.
+** Copyright (C) 2021 Keith Kyzivat
+** Copyright (C) 2021 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
-**
-** This file is part of the examples of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:BSD$
 ** Commercial License Usage
@@ -48,8 +47,8 @@
 **
 ****************************************************************************/
 
-#ifndef SCREENSHOT_H
-#define SCREENSHOT_H
+#ifndef SCREENZOOM_H
+#define SCREENZOOM_H
 
 #include <QPixmap>
 #include <QWidget>
@@ -66,12 +65,12 @@ class QVBoxLayout;
 QT_END_NAMESPACE
 
 //! [0]
-class Screenshot : public QWidget
+class ScreenZoom : public QWidget
 {
     Q_OBJECT
 
 public:
-    Screenshot();
+    ScreenZoom();
 
 protected:
     void resizeEvent(QResizeEvent *event) override;
@@ -90,8 +89,9 @@ private:
     QLabel *screenshotLabel;
     QSpinBox *delaySpinBox;
     QCheckBox *hideThisWindowCheckBox;
+    QCheckBox *continuousCheckBox;
     QPushButton *newScreenshotButton;
 };
 //! [0]
 
-#endif // SCREENSHOT_H
+#endif // SCREENZOOM_H
