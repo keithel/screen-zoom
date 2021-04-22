@@ -66,8 +66,8 @@ ScreenZoom::ScreenZoom()
 
     QGroupBox *optionsGroupBox = new QGroupBox(tr("Options"), this);
     delaySpinBox = new QSpinBox(optionsGroupBox);
-    delaySpinBox->setSuffix(tr(" s"));
-    delaySpinBox->setMaximum(60);
+    delaySpinBox->setSuffix(tr(" ms"));
+    delaySpinBox->setMaximum(6000);
 
     connect(delaySpinBox, QOverload<int>::of(&QSpinBox::valueChanged),
             this, &ScreenZoom::updateCheckBox);
@@ -96,7 +96,9 @@ ScreenZoom::ScreenZoom()
     mainLayout->addLayout(buttonsLayout);
 
     shootScreen();
-    delaySpinBox->setValue(5);
+    delaySpinBox->setStepType(QSpinBox::AdaptiveDecimalStepType);
+    delaySpinBox->setWrapping(true);
+    delaySpinBox->setValue(250);
 
     setWindowTitle(tr("Screenshot"));
     resize(300, 200);
@@ -120,7 +122,7 @@ void ScreenZoom::newScreenshot()
         hide();
     newScreenshotButton->setDisabled(true);
 
-    QTimer::singleShot(delaySpinBox->value() * 1000, this, &ScreenZoom::shootScreen);
+    QTimer::singleShot(delaySpinBox->value(), this, &ScreenZoom::shootScreen);
 }
 //! [2]
 
