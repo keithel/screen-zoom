@@ -73,11 +73,13 @@ ScreenZoom::ScreenZoom()
             this, &ScreenZoom::updateCheckBox);
 
     hideThisWindowCheckBox = new QCheckBox(tr("Hide This Window"), optionsGroupBox);
+    continuousCheckBox = new QCheckBox(tr("Continuous"), optionsGroupBox);
 
     QGridLayout *optionsGroupBoxLayout = new QGridLayout(optionsGroupBox);
     optionsGroupBoxLayout->addWidget(new QLabel(tr("Screenshot Delay:"), this), 0, 0);
     optionsGroupBoxLayout->addWidget(delaySpinBox, 0, 1);
-    optionsGroupBoxLayout->addWidget(hideThisWindowCheckBox, 1, 0, 1, 2);
+    optionsGroupBoxLayout->addWidget(hideThisWindowCheckBox, 1, 0);
+    optionsGroupBoxLayout->addWidget(continuousCheckBox, 1, 1);
 
     mainLayout->addWidget(optionsGroupBox);
 
@@ -115,8 +117,6 @@ void ScreenZoom::resizeEvent(QResizeEvent * /* event */)
 //! [2]
 void ScreenZoom::newScreenshot()
 {
-    if (hideThisWindowCheckBox->isChecked())
-        hide();
     newScreenshotButton->setDisabled(true);
 
     QTimer::singleShot(delaySpinBox->value(), this, &ScreenZoom::shootScreen);
@@ -125,6 +125,9 @@ void ScreenZoom::newScreenshot()
 
 void ScreenZoom::shootScreen()
 {
+    if (hideThisWindowCheckBox->isChecked())
+        hide();
+
     QScreen *screen = QGuiApplication::primaryScreen();
     if (const QWindow *window = windowHandle())
         screen = window->screen();
@@ -140,8 +143,10 @@ void ScreenZoom::shootScreen()
     newScreenshotButton->setDisabled(false);
     if (hideThisWindowCheckBox->isChecked())
         show();
+
+    if (delaySpinBox->value() != 0 && continuousCheckBox->isChecked())
+        newScreenshot();
 }
-//! [4]
 
 //! [6]
 void ScreenZoom::updateCheckBox()
