@@ -78,7 +78,6 @@ protected:
 private slots:
     void newScreenshot();
     void shootScreen();
-    void updateCheckBox();
 
 private:
     void updateScreenshotLabel();
@@ -87,9 +86,7 @@ private:
 
     QLabel *screenshotLabel;
     QSpinBox *delaySpinBox;
-    QCheckBox *hideThisWindowCheckBox;
     QCheckBox *continuousCheckBox;
-    QPushButton *newScreenshotButton;
 };
 //! [0]
 

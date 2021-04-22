@@ -69,35 +69,28 @@ ScreenZoom::ScreenZoom()
     delaySpinBox->setSuffix(tr(" ms"));
     delaySpinBox->setMaximum(6000);
 
-    connect(delaySpinBox, QOverload<int>::of(&QSpinBox::valueChanged),
-            this, &ScreenZoom::updateCheckBox);
-
-    hideThisWindowCheckBox = new QCheckBox(tr("Hide This Window"), optionsGroupBox);
     continuousCheckBox = new QCheckBox(tr("Continuous"), optionsGroupBox);
+    continuousCheckBox->setChecked(true);
 
     QGridLayout *optionsGroupBoxLayout = new QGridLayout(optionsGroupBox);
     optionsGroupBoxLayout->addWidget(new QLabel(tr("Screenshot Delay:"), this), 0, 0);
     optionsGroupBoxLayout->addWidget(delaySpinBox, 0, 1);
-    optionsGroupBoxLayout->addWidget(hideThisWindowCheckBox, 1, 0);
-    optionsGroupBoxLayout->addWidget(continuousCheckBox, 1, 1);
+    optionsGroupBoxLayout->addWidget(continuousCheckBox, 1, 0);
 
     mainLayout->addWidget(optionsGroupBox);
 
     QHBoxLayout *buttonsLayout = new QHBoxLayout;
     buttonsLayout->addStretch();
-    newScreenshotButton = new QPushButton(tr("New Screenshot"), this);
-    connect(newScreenshotButton, &QPushButton::clicked, this, &ScreenZoom::newScreenshot);
-    buttonsLayout->addWidget(newScreenshotButton);
     QPushButton *quitScreenshotButton = new QPushButton(tr("Quit"), this);
     quitScreenshotButton->setShortcut(Qt::CTRL + Qt::Key_Q);
     connect(quitScreenshotButton, &QPushButton::clicked, this, &QWidget::close);
     buttonsLayout->addWidget(quitScreenshotButton);
     mainLayout->addLayout(buttonsLayout);
 
-    shootScreen();
     delaySpinBox->setStepType(QSpinBox::AdaptiveDecimalStepType);
     delaySpinBox->setWrapping(true);
     delaySpinBox->setValue(250);
+    shootScreen();
 
     setWindowTitle(tr("Screenshot"));
     resize(300, 200);
@@ -117,17 +110,12 @@ void ScreenZoom::resizeEvent(QResizeEvent * /* event */)
 //! [2]
 void ScreenZoom::newScreenshot()
 {
-    newScreenshotButton->setDisabled(true);
-
     QTimer::singleShot(delaySpinBox->value(), this, &ScreenZoom::shootScreen);
 }
 //! [2]
 
 void ScreenZoom::shootScreen()
 {
-    if (hideThisWindowCheckBox->isChecked())
-        hide();
-
     QScreen *screen = QGuiApplication::primaryScreen();
     if (const QWindow *window = windowHandle())
         screen = window->screen();
@@ -141,26 +129,9 @@ void ScreenZoom::shootScreen()
     originalPixmap = screen->grabWindow(0, cursorPos.x(), cursorPos.y());//, 50, 50);
     updateScreenshotLabel();
 
-    newScreenshotButton->setDisabled(false);
-    if (hideThisWindowCheckBox->isChecked())
-        show();
-
     if (delaySpinBox->value() != 0 && continuousCheckBox->isChecked())
         newScreenshot();
 }
-
-//! [6]
-void ScreenZoom::updateCheckBox()
-{
-    if (delaySpinBox->value() == 0) {
-        hideThisWindowCheckBox->setDisabled(true);
-        hideThisWindowCheckBox->setChecked(false);
-    } else {
-        hideThisWindowCheckBox->setDisabled(false);
-    }
-}
-//! [6]
-
 
 //! [10]
 void ScreenZoom::updateScreenshotLabel()
