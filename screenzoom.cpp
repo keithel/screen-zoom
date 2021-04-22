@@ -191,7 +191,7 @@ void ScreenZoom::updateCheckBox()
 //! [10]
 void ScreenZoom::updateScreenshotLabel()
 {
-    screenshotLabel->setPixmap(originalPixmap.scaled(screenshotLabel->size(),
+    screenshotLabel->setPixmap(originalPixmap.scaled(screenshotLabel->size()*originalPixmap.devicePixelRatioF(),
                                                      Qt::KeepAspectRatio,
                                                      Qt::SmoothTransformation));
 }
