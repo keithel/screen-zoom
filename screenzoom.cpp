@@ -55,11 +55,11 @@
 ScreenZoom::ScreenZoom()
     :  screenshotLabel(new QLabel(this))
 {
+    setWindowFlag(Qt::FramelessWindowHint, true);
     screenshotLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     screenshotLabel->setAlignment(Qt::AlignCenter);
 
-    const QRect screenGeometry = screen()->geometry();
-    screenshotLabel->setMinimumSize(screenGeometry.width() / 8, screenGeometry.height() / 8);
+    screenshotLabel->setMinimumSize(100, 100);
 
     QVBoxLayout *mainLayout = new QVBoxLayout(this);
     mainLayout->addWidget(screenshotLabel);
@@ -68,14 +68,14 @@ ScreenZoom::ScreenZoom()
     delaySpinBox = new QSpinBox(optionsGroupBox);
     delaySpinBox->setSuffix(tr(" ms"));
     delaySpinBox->setMaximum(6000);
-
-    continuousCheckBox = new QCheckBox(tr("Continuous"), optionsGroupBox);
-    continuousCheckBox->setChecked(true);
+    delaySpinBox->setMinimum(16);
+    delaySpinBox->setStepType(QSpinBox::AdaptiveDecimalStepType);
+    delaySpinBox->setWrapping(true);
+    delaySpinBox->setValue(16);
 
     QGridLayout *optionsGroupBoxLayout = new QGridLayout(optionsGroupBox);
     optionsGroupBoxLayout->addWidget(new QLabel(tr("Screenshot Delay:"), this), 0, 0);
     optionsGroupBoxLayout->addWidget(delaySpinBox, 0, 1);
-    optionsGroupBoxLayout->addWidget(continuousCheckBox, 1, 0);
 
     mainLayout->addWidget(optionsGroupBox);
 
@@ -83,17 +83,15 @@ ScreenZoom::ScreenZoom()
     buttonsLayout->addStretch();
     QPushButton *quitScreenshotButton = new QPushButton(tr("Quit"), this);
     quitScreenshotButton->setShortcut(Qt::CTRL + Qt::Key_Q);
-    connect(quitScreenshotButton, &QPushButton::clicked, this, &QWidget::close);
+    connect(quitScreenshotButton, &QPushButton::clicked, qApp, &QCoreApplication::quit);
     buttonsLayout->addWidget(quitScreenshotButton);
     mainLayout->addLayout(buttonsLayout);
 
-    delaySpinBox->setStepType(QSpinBox::AdaptiveDecimalStepType);
-    delaySpinBox->setWrapping(true);
-    delaySpinBox->setValue(250);
-    shootScreen();
-
-    setWindowTitle(tr("Screenshot"));
-    resize(300, 200);
+    shotTimer = new QTimer(this);
+    connect(shotTimer, &QTimer::timeout, this, &ScreenZoom::shootScreen);
+    connect(delaySpinBox, QOverload<int>::of(&QSpinBox::valueChanged),
+            shotTimer, QOverload<int>::of(&QTimer::start));
+    shotTimer->start(delaySpinBox->value());
 }
 //! [0]
 
@@ -107,13 +105,6 @@ void ScreenZoom::resizeEvent(QResizeEvent * /* event */)
 }
 //! [1]
 
-//! [2]
-void ScreenZoom::newScreenshot()
-{
-    QTimer::singleShot(delaySpinBox->value(), this, &ScreenZoom::shootScreen);
-}
-//! [2]
-
 void ScreenZoom::shootScreen()
 {
     QScreen *screen = QGuiApplication::primaryScreen();
@@ -122,22 +113,20 @@ void ScreenZoom::shootScreen()
     if (!screen)
         return;
 
-    if (delaySpinBox->value() != 0)
-        QApplication::beep();
-
     QPoint cursorPos = QCursor::pos();
-    originalPixmap = screen->grabWindow(0, cursorPos.x(), cursorPos.y());//, 50, 50);
-    updateScreenshotLabel();
 
-    if (delaySpinBox->value() != 0 && continuousCheckBox->isChecked())
-        newScreenshot();
+    originalPixmap = screen->grabWindow(0, cursorPos.x(), cursorPos.y(), m_size.width(), m_size.height());
+    updateScreenshotLabel();
 }
 
 //! [10]
 void ScreenZoom::updateScreenshotLabel()
 {
+    if (originalPixmap.isNull())
+        return;
+
     screenshotLabel->setPixmap(originalPixmap.scaled(screenshotLabel->size()*originalPixmap.devicePixelRatioF(),
                                                      Qt::KeepAspectRatio,
-                                                     Qt::SmoothTransformation));
+                                                     Qt::FastTransformation));
 }
 //! [10]

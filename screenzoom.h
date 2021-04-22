@@ -52,6 +52,7 @@
 
 #include <QPixmap>
 #include <QWidget>
+#include <QSize>
 
 QT_BEGIN_NAMESPACE
 class QCheckBox;
@@ -76,7 +77,6 @@ protected:
     void resizeEvent(QResizeEvent *event) override;
 
 private slots:
-    void newScreenshot();
     void shootScreen();
 
 private:
@@ -86,7 +86,8 @@ private:
 
     QLabel *screenshotLabel;
     QSpinBox *delaySpinBox;
-    QCheckBox *continuousCheckBox;
+    QTimer* shotTimer;
+    QSize m_size{50, 50};
 };
 //! [0]
 
