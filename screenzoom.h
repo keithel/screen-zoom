@@ -71,7 +71,7 @@ protected:
     void resizeEvent(QResizeEvent *event) override;
 
 private slots:
-    void captureRegion();
+    void processCursorPosition();
 
 private:
     void updateScreenshotLabel();

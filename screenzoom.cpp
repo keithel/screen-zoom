@@ -64,7 +64,7 @@ ScreenZoom::ScreenZoom()
     connect(quitShortcut, &QShortcut::activated, qApp, &QCoreApplication::quit);
 
     shotTimer = new QTimer(this);
-    connect(shotTimer, &QTimer::timeout, this, &ScreenZoom::captureRegion);
+    connect(shotTimer, &QTimer::timeout, this, &ScreenZoom::processCursorPosition);
     shotTimer->start(16);
     resize(200, 200);
 }
@@ -80,30 +80,23 @@ void ScreenZoom::resizeEvent(QResizeEvent * /* event */)
 }
 //! [1]
 
-void ScreenZoom::captureRegion()
+void ScreenZoom::processCursorPosition()
 {
     QPoint pt = QCursor::pos();
     if (pt == lastCursorPos)
         return;
 
-    QScreen *screen = QGuiApplication::primaryScreen();
-    const QWindow *window = windowHandle();
-    if (window)
-        screen = window->screen();
-
-    // If cursor is on a different screen than the label is, move it.
-    // Also use the cursor's screen for the grab.
-    QScreen* screenAtCursorPos = QGuiApplication::screenAt(pt);
-    if (screenAtCursorPos && screenAtCursorPos != screen) {
-        move(screenAtCursorPos->geometry().topLeft());
-        screen = screenAtCursorPos;
-    }
-
-    if (!screen)
+    QScreen* screenAtCursor = QGuiApplication::screenAt(pt);
+    if (!screenAtCursor)
         return;
 
-    QPoint ptScreenRelative = pt - screen->geometry().topLeft();
-    originalPixmap = screen->grabWindow(0, ptScreenRelative.x(), ptScreenRelative.y(), m_size.width(), m_size.height());
+    // If cursor is on a different screen than the label is, move it.
+    QScreen *screen = window()->windowHandle()->screen();
+    if (screenAtCursor != screen)
+        move(screenAtCursor->geometry().topLeft());
+
+    QPoint ptScreenRelative = pt - screenAtCursor->geometry().topLeft();
+    originalPixmap = screenAtCursor->grabWindow(0, ptScreenRelative.x(), ptScreenRelative.y(), m_size.width(), m_size.height());
     updateScreenshotLabel();
     lastCursorPos = pt;
 }
