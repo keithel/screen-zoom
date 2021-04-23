@@ -66,6 +66,7 @@ ScreenZoom::ScreenZoom()
     shotTimer = new QTimer(this);
     connect(shotTimer, &QTimer::timeout, this, &ScreenZoom::shootScreen);
     shotTimer->start(16);
+    resize(200, 200);
 }
 //! [0]
 
