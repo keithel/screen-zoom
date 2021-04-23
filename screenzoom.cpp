@@ -53,16 +53,12 @@
 
 //! [0]
 ScreenZoom::ScreenZoom()
-    :  screenshotLabel(new QLabel(this))
 {
     setWindowFlag(Qt::FramelessWindowHint, true);
-    screenshotLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    screenshotLabel->setAlignment(Qt::AlignCenter);
+    setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    setAlignment(Qt::AlignCenter);
 
-    screenshotLabel->setMinimumSize(100, 100);
-
-    QVBoxLayout *mainLayout = new QVBoxLayout(this);
-    mainLayout->addWidget(screenshotLabel);
+    setMinimumSize(100, 100);
 
     QShortcut *quitShortcut = new QShortcut(tr("Ctrl+Q"), this);
     connect(quitShortcut, &QShortcut::activated, qApp, &QCoreApplication::quit);
@@ -77,8 +73,8 @@ ScreenZoom::ScreenZoom()
 void ScreenZoom::resizeEvent(QResizeEvent * /* event */)
 {
     QSize scaledSize = originalPixmap.size();
-    scaledSize.scale(screenshotLabel->size(), Qt::KeepAspectRatio);
-    if (scaledSize != screenshotLabel->pixmap(Qt::ReturnByValue).size())
+    scaledSize.scale(size(), Qt::KeepAspectRatio);
+    if (scaledSize != pixmap(Qt::ReturnByValue).size())
         updateScreenshotLabel();
 }
 //! [1]
@@ -103,7 +99,7 @@ void ScreenZoom::updateScreenshotLabel()
     if (originalPixmap.isNull())
         return;
 
-    screenshotLabel->setPixmap(originalPixmap.scaled(screenshotLabel->size()*originalPixmap.devicePixelRatioF(),
+    setPixmap(originalPixmap.scaled(size()*originalPixmap.devicePixelRatioF(),
                                                      Qt::KeepAspectRatio,
                                                      Qt::FastTransformation));
 }

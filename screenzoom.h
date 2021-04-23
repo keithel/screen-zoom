@@ -51,7 +51,7 @@
 #define SCREENZOOM_H
 
 #include <QPixmap>
-#include <QWidget>
+#include <QLabel>
 #include <QSize>
 
 QT_BEGIN_NAMESPACE
@@ -60,7 +60,7 @@ class QTimer;
 QT_END_NAMESPACE
 
 //! [0]
-class ScreenZoom : public QWidget
+class ScreenZoom : public QLabel
 {
     Q_OBJECT
 
@@ -78,7 +78,6 @@ private:
 
     QPixmap originalPixmap;
 
-    QLabel *screenshotLabel;
     QTimer* shotTimer;
     QSize m_size{50, 50};
 };
