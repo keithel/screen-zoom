@@ -71,11 +71,12 @@ protected:
     void resizeEvent(QResizeEvent *event) override;
 
 private slots:
-    void shootScreen();
+    void captureRegion();
 
 private:
     void updateScreenshotLabel();
 
+    QPoint lastCursorPos;
     QPixmap originalPixmap;
 
     QTimer* shotTimer;
