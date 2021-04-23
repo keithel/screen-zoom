@@ -55,14 +55,8 @@
 #include <QSize>
 
 QT_BEGIN_NAMESPACE
-class QCheckBox;
-class QGridLayout;
-class QGroupBox;
-class QHBoxLayout;
 class QLabel;
-class QPushButton;
-class QSpinBox;
-class QVBoxLayout;
+class QTimer;
 QT_END_NAMESPACE
 
 //! [0]
@@ -85,7 +79,6 @@ private:
     QPixmap originalPixmap;
 
     QLabel *screenshotLabel;
-    QSpinBox *delaySpinBox;
     QTimer* shotTimer;
     QSize m_size{50, 50};
 };
